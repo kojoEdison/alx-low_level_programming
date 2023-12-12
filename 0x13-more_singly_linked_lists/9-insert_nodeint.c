@@ -1,48 +1,49 @@
 #include "lists.h"
 
 /**
- * insert_nodeint_at_index - Inserts a latest node at a given position
- * @head: Pointer to the head node of the list
- * @idx: Index where latest node should be inserted (starting from 0)
- * @n: Value to be stored in the new node
- *
- * Return: Address of the new node or NULL if it failed
+ * insert_nodeint_at_index - insert a new node
+ * at a given position
+ * @head: head of a list
+ * @idx: index of the list where the new node is
+ * added.
+ * @n: integer element
+ * Return: the address of new node or Null
  */
-
 listint_t *insert_nodeint_at_index(listint_t **head, unsigned int idx, int n)
-
 {
-unsigned int i;
-listint_t *latestNode, *tmp;
-if (head == NULL)
-return (NULL);
+	unsigned int i;
+	listint_t *new;
+	listint_t *h;
 
-/* Create new node */
-latestNode = malloc(sizeof(listint_t));
-if (latestNode == NULL)
-return (NULL);
-latestNode->n = n;
+	h = *head;
 
-if (idx == 0) /* Insert at beginning of list */
-{
-latestNode->next = *head;
-*head = latestNode;
-}
-else /* Insert at any other position */
-{
-tmp = *head;
-for (i = 0; i < idx - 1 && tmp != NULL; i++)
-tmp = tmp->next;
+	if (idx != 0)
+	{
+		for (i = 0; i < idx - 1 && h != NULL; i++)
+		{
+			h = h->next;
+		}
+	}
 
-/* Check if the given index is valid */
-if (tmp == NULL)
-{
-free(latestNode);
-return (NULL);
-}
+	if (h == NULL && idx != 0)
+		return (NULL);
 
-latestNode->next = tmp->next;
-tmp->next = latestNode;
-}
-return (latestNode);
+	new = malloc(sizeof(listint_t));
+	if (new == NULL)
+		return (NULL);
+
+	new->n = n;
+
+	if (idx == 0)
+	{
+		new->next = *head;
+		*head = new;
+	}
+	else
+	{
+		new->next = h->next;
+		h->next = new;
+	}
+
+	return (new);
 }

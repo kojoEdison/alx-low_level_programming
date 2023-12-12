@@ -1,52 +1,68 @@
 #include "lists.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 /**
- * print_listint_safe - Prints a listint_t linked list safely
- * @head: A pointer to the head node of the list
+ * free_listp - frees a linked list
+ * @head: head of a list.
+ * Return: no return.
+ */
+void free_listp(listp_t **head)
+{
+	listp_t *temp;
+	listp_t *curr;
+
+	if (head != NULL)
+	{
+		curr = *head;
+		while ((temp = curr) != NULL)
+		{
+			curr = curr->next;
+			free(temp);
+		}
+		*head = NULL;
+	}
+}
+
+/**
+ * print_listint_safe - prints a linked list.
+ * @head: head of a list.
  *
- * Return: The number of nodes in the list
+ * Return: number of nodes in the list.
  */
 size_t print_listint_safe(const listint_t *head)
-
 {
-const listint_t *tortoise, *hare;
-size_t count = 0;
+	size_t numnodes = 0;
+	listp_t *hptr, *new, *add;
 
-if (head == NULL)
-exit(98);
+	hptr = NULL;
+	while (head != NULL)
+	{
+		new = malloc(sizeof(listp_t));
 
-tortoise = hare = head;
+		if (new == NULL)
+			exit(98);
 
-while (tortoise && hare && hare->next)
-{
-tortoise = tortoise->next;
-hare = hare->next->next;
+		new->p = (void *)head;
+		new->next = hptr;
+		hptr = new;
 
-/* If there is a loop */
-if (tortoise == hare)
-{
-/* Print nodes before the loop */
-do {
-printf("[%p] %d\n", (void *)tortoise, tortoise->n);
-tortoise = tortoise->next;
-count++;
-}
+		add = hptr;
 
-while (tortoise != hare)
-{
-/* Print the loop */
-printf("[%p] %d\n", (void *)tortoise, tortoise->n);
-printf("-> [%p] %d\n", (void *)hare, hare->n);
-count++;
-return (count);
-}
+		while (add->next != NULL)
+		{
+			add = add->next;
+			if (head == add->p)
+			{
+				printf("-> [%p] %d\n", (void *)head, head->n);
+				free_listp(&hptr);
+				return (numnodes);
+			}
+		}
 
-/* If there is no loop, print the current node */
-printf("[%p] %d\n", (void *)tortoise, tortoise->n);
-count++;
-}
+		printf("[%p] %d\n", (void *)head, head->n);
+		head = head->next;
+		numnodes++;
+	}
 
-return (count);
+	free_listp(&hptr);
+	return (numnodes);
 }
